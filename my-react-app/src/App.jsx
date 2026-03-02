@@ -1,43 +1,37 @@
 import React, { useState } from 'react';
 
 function App() {
-  const [status, setStatus] = useState('Idle');
+  const [status, setStatus] = useState('Ready');
 
-  const handleTransaction = async () => {
+  const executeLogSync = async () => {
     setStatus('Processing...');
     try {
       const response = await fetch('http://localhost:5000/api/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: 1500.50,
-          userId: "550e8400-e29b-41d4-a716-446655440000",
-          metadata: { ip: "127.0.0.1", device: "Chrome-Vite-App" }
+          amount: 1250.75,
+          userId: "123e4567-e89b-12d3-a456-426614174000",
+          metadata: { ip: "192.168.1.1", device: "Solo-Dev-Vite" }
         })
       });
-
       const result = await response.json();
-      
-      if (result.success) {
-        setStatus(`Success! Txn ID: ${result.transaction_id}`);
-      } else {
-        setStatus(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      setStatus('Network Error: Check if Backend is running.');
+      setStatus(result.success ? `Success: ${result.txnId}` : `Error: ${result.error}`);
+    } catch (err) {
+      setStatus('Backend Offline');
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-slate-900 text-white">
-      <h1 className="text-3xl font-bold mb-4">LogSync Transaction Portal</h1>
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-900 text-white font-sans">
+      <h1 className="text-4xl font-bold mb-6">LogSync Polyglot Portal</h1>
       <button 
-        onClick={handleTransaction}
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition"
+        onClick={executeLogSync}
+        className="bg-green-600 hover:bg-green-500 px-8 py-4 rounded-xl font-bold transition-all"
       >
-        Execute Secure Transaction
+        Run Dual-Database Write
       </button>
-      <p className="mt-4 text-slate-400">Status: {status}</p>
+      <p className="mt-6 text-gray-400">System Status: {status}</p>
     </div>
   );
 }
